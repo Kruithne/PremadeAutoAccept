@@ -8,7 +8,6 @@
 local eventFrame = CreateFrame("FRAME");
 local isAutoAccepting = false;
 local displayedRaidConvert = false;
-local autoAcceptButton = nil;
 
 local function InviteApplicants()
 	local applicants = C_LFGList.GetApplicants();
@@ -36,24 +35,24 @@ local function OnAutoAcceptButtonClick(self)
 end
 
 local function CreateAutoAcceptButton()
-	autoAcceptButton = CreateFrame("CheckButton", "PremadeAutoAcceptButton", LFGListFrame.ApplicationViewer);
-	autoAcceptButton:SetPoint("BOTTOMLEFT", LFGListFrame.ApplicationViewer.InfoBackground, "BOTTOMLEFT", 12, 10);
-	autoAcceptButton:SetHitRectInsets(0, -130, 0, 0);
-	autoAcceptButton:SetWidth(22);
-	autoAcceptButton:SetHeight(22);
-	autoAcceptButton:Show();
+	local button = CreateFrame("CheckButton", "PremadeAutoAcceptButton", LFGListFrame.ApplicationViewer);
+	button:SetPoint("BOTTOMLEFT", LFGListFrame.ApplicationViewer.InfoBackground, "BOTTOMLEFT", 12, 25);
+	button:SetHitRectInsets(0, -130, 0, 0);
+	button:SetWidth(22);
+	button:SetHeight(22);
+	button:Show();
 
-	autoAcceptButton:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up");
-	autoAcceptButton:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
-	autoAcceptButton:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
-	autoAcceptButton:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
+	button:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up");
+	button:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
+	button:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
+	button:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
 
-	autoAcceptButton:SetScript("OnClick", OnAutoAcceptButtonClick);
+	button:SetScript("OnClick", OnAutoAcceptButtonClick);
 
-	local text = autoAcceptButton:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
+	local text = button:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
 	text:SetText(LFG_LIST_AUTO_ACCEPT);
 	text:SetJustifyH("LEFT");
-	text:SetPoint("LEFT", autoAcceptButton, "RIGHT", 2, 0);
+	text:SetPoint("LEFT", button, "RIGHT", 2, 0);
 end
 
 local function OnLoad()
