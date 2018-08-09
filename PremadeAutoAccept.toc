@@ -1,0 +1,11 @@
+## Interface: 80000
+## Title: PremadeAutoAccept
+## Notes: Returns the auto-accept button to the premade group finder
+## Author: Kruithne
+## Version: 1.0.0
+
+## X-Curse-Project-ID: premade-auto-accept
+## X-GitHub-Repo: Kruithne/PremadeAutoAccept
+## X-License: All Rights Reserved. Modifications welcome on GitHub: https://github.com/Kruithne/PremadeAutoAccept
+
+PremadeAutoAccept.lua
