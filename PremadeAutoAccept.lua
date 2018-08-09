@@ -8,6 +8,7 @@
 local eventFrame = CreateFrame("FRAME");
 local isAutoAccepting = false;
 local displayedRaidConvert = false;
+local autoAccepting = {};
 
 local function InviteApplicants()
 	local applicants = C_LFGList.GetApplicants();
@@ -17,14 +18,17 @@ local function InviteApplicants()
 		-- Using the premade "invite" feature does not work, as Blizzard have broken auto-accept intentionally
 		-- Because of this, we can't invite groups, but we can still send normal invites to singletons.
 		if numMembers == 1 and (pendingStatus or status == "applied") then
-			local name = C_LFGList.GetApplicantMemberInfo(id, 1);
-			InviteUnit(name);
+			local name, _, _, _, _, _, _, _, _, assignedRole  = C_LFGList.GetApplicantMemberInfo(id, 1);
+			if autoAccepting[assignedRole] then
+				InviteUnit(name);
+			end
 		end
 	end
 end
 
-local function OnAutoAcceptButtonClick(self)
+local function OnCheckBoxClick(self)
 	isAutoAccepting = self:GetChecked();
+	autoAccepting[self.role] = isAutoAccepting;
 
 	if isAutoAccepting then
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
@@ -34,10 +38,8 @@ local function OnAutoAcceptButtonClick(self)
 	end
 end
 
-local function CreateAutoAcceptButton()
-	local button = CreateFrame("CheckButton", "PremadeAutoAcceptButton", LFGListFrame.ApplicationViewer);
-	button:SetPoint("BOTTOMLEFT", LFGListFrame.ApplicationViewer.InfoBackground, "BOTTOMLEFT", 12, 25);
-	button:SetHitRectInsets(0, -130, 0, 0);
+local function CreateCheckbox(atlas, role)
+	local button = CreateFrame("CheckButton", nil, LFGListFrame.ApplicationViewer);
 	button:SetWidth(22);
 	button:SetHeight(22);
 	button:Show();
@@ -47,12 +49,33 @@ local function CreateAutoAcceptButton()
 	button:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
 	button:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
 
-	button:SetScript("OnClick", OnAutoAcceptButtonClick);
+	button.role = role;
+	button:SetScript("OnClick", OnCheckBoxClick);
 
-	local text = button:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
-	text:SetText(LFG_LIST_AUTO_ACCEPT);
-	text:SetJustifyH("LEFT");
-	text:SetPoint("LEFT", button, "RIGHT", 2, 0);
+	local icon = button:CreateTexture(nil, "ARTWORK");
+	icon:SetAtlas(atlas);
+	icon:SetWidth(17);
+	icon:SetHeight(17);
+	icon:SetPoint("LEFT", button, "RIGHT", 2, 0);
+	button.icon = icon;
+
+	return button;
+end
+
+local function CreateAutoAcceptButtons()
+	local header = LFGListFrame.ApplicationViewer:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
+	header:SetPoint("BOTTOMLEFT", LFGListFrame.ApplicationViewer.InfoBackground, "BOTTOMLEFT", 12, 30);
+	header:SetText(LFG_LIST_AUTO_ACCEPT);
+	header:SetJustifyH("LEFT");
+
+	local damageButton = CreateCheckbox("groupfinder-icon-role-large-dps", "DAMAGER");
+	damageButton:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -1);
+
+	local healerButton = CreateCheckbox("groupfinder-icon-role-large-heal", "HEALER");
+	healerButton:SetPoint("LEFT", damageButton.icon, "RIGHT", 5, 0);
+
+	local tankButton = CreateCheckbox("groupfinder-icon-role-large-tank", "TANK");
+	tankButton:SetPoint("LEFT", healerButton.icon, "RIGHT", 5, 0);
 end
 
 local function OnLoad()
@@ -60,7 +83,7 @@ local function OnLoad()
 	eventFrame:RegisterEvent("GROUP_LEFT");
 	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED");
 
-	CreateAutoAcceptButton();
+	CreateAutoAcceptButtons();
 end
 
 local function OnApplicantListUpdated()
