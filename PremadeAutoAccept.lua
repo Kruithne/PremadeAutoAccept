@@ -101,8 +101,6 @@ local function OnApplicantListUpdated()
 			InviteApplicants();
 		end
 	end
-
-	LFGListFrame.ApplicationViewer.AutoAcceptButton:SetChecked(isAutoAccepting);
 end
 
 local function OnEvent(self, event, ...)
