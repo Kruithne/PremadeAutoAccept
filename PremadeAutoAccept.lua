@@ -8,6 +8,7 @@
 local eventFrame = CreateFrame("FRAME");
 local isAutoAccepting = false;
 local displayedRaidConvert = false;
+local autoAcceptButton = nil;
 
 local function InviteApplicants()
 	local applicants = C_LFGList.GetApplicants();
@@ -23,35 +24,44 @@ local function InviteApplicants()
 	end
 end
 
+local function OnAutoAcceptButtonClick(self)
+	isAutoAccepting = self:GetChecked();
+
+	if isAutoAccepting then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+		InviteApplicants();
+	else
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+	end
+end
+
+local function CreateAutoAcceptButton()
+	autoAcceptButton = CreateFrame("CheckButton", "PremadeAutoAcceptButton", LFGListFrame.ApplicationViewer);
+	autoAcceptButton:SetPoint("BOTTOMLEFT", LFGListFrame.ApplicationViewer.InfoBackground, "BOTTOMLEFT", 12, 10);
+	autoAcceptButton:SetHitRectInsets(0, -130, 0, 0);
+	autoAcceptButton:SetWidth(22);
+	autoAcceptButton:SetHeight(22);
+	autoAcceptButton:Show();
+
+	autoAcceptButton:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up");
+	autoAcceptButton:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
+	autoAcceptButton:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
+	autoAcceptButton:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
+
+	autoAcceptButton:SetScript("OnClick", OnAutoAcceptButtonClick);
+
+	local text = autoAcceptButton:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
+	text:SetText(LFG_LIST_AUTO_ACCEPT);
+	text:SetJustifyH("LEFT");
+	text:SetPoint("LEFT", autoAcceptButton, "RIGHT", 2, 0);
+end
+
 local function OnLoad()
 	eventFrame:RegisterEvent("LFG_LIST_APPLICANT_LIST_UPDATED");
 	eventFrame:RegisterEvent("GROUP_LEFT");
 	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED");
 
-	-- Force the auto-accept button to show even when the server says no.
-	C_LFGList.CanActiveEntryUseAutoAccept = function()
-		return true;
-	end
-
-	-- Overwrite the old handler for clicking the auto-accept button.
-	LFGListFrame.ApplicationViewer.AutoAcceptButton:SetScript("OnClick", function(self)
-		if self:GetChecked() then
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-		else
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
-		end
-
-		isAutoAccepting = self:GetChecked();
-		if isAutoAccepting then
-			InviteApplicants();
-		end
-	end);
-
-	-- Prevent Blizzard UI from changing the tick-state of the auto-accept button.
-	local old_SetChecked = LFGListFrame.ApplicationViewer.AutoAcceptButton.SetChecked;
-	LFGListFrame.ApplicationViewer.AutoAcceptButton.SetChecked = function()
-		old_SetChecked(LFGListFrame.ApplicationViewer.AutoAcceptButton, isAutoAccepting);
-	end
+	CreateAutoAcceptButton();
 end
 
 local function OnApplicantListUpdated()
