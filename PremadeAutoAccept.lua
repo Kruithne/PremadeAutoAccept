@@ -1,7 +1,7 @@
 --[[
 	PremadeAutoAccept (C) Kruithne <kruithne@gmail.com>
 	Licensed under GNU General Public Licence version 3.
-	
+
 	https://github.com/Kruithne/PremadeAutoAccept
 ]]--
 
@@ -13,17 +13,18 @@ local autoAccepting = {};
 local function InviteApplicants()
 	local applicants = C_LFGList.GetApplicants();
 	for i = 1, #applicants do
-		local id, status, pendingStatus, numMembers = C_LFGList.GetApplicantInfo(applicants[i]);
+		local applicantData = C_LFGList.GetApplicantInfo(applicants[i]);
 
 		-- Using the premade "invite" feature does not work, as Blizzard have broken auto-accept intentionally
 		-- Because of this, we can't invite groups, but we can still send normal invites to singletons.
-		if numMembers == 1 and (pendingStatus or status == "applied") then
-			local name, _, _, _, _, _, _, _, _, assignedRole  = C_LFGList.GetApplicantMemberInfo(id, 1);
+		if applicantData and (applicantData.applicationStatus or applicantData.pendingApplicationStatus == "applied") and applicantData.numMembers == 1 then
+
+			local name, _, _, _, _, _, _, _, _, assignedRole  = C_LFGList.GetApplicantMemberInfo(applicants[i], 1);
 			if autoAccepting[assignedRole] then
 				InviteUnit(name);
 			end
 		end
-	end
+	endwd
 end
 
 local function OnCheckBoxClick(self)
