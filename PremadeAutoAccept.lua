@@ -24,7 +24,7 @@ local function InviteApplicants()
 				InviteUnit(name);
 			end
 		end
-	endwd
+	end
 end
 
 local function OnCheckBoxClick(self)
