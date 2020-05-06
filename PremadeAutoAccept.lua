@@ -17,7 +17,7 @@ local function InviteApplicants()
 
 		-- Using the premade "invite" feature does not work, as Blizzard have broken auto-accept intentionally
 		-- Because of this, we can't invite groups, but we can still send normal invites to singletons.
-		if applicantData and (applicantData.applicationStatus or applicantData.pendingApplicationStatus == "applied") and applicantData.numMembers == 1 then
+		if applicantData and (applicantData.applicationStatus == "applied" or applicantData.pendingApplicationStatus == "applied") and applicantData.numMembers == 1 then
 
 			local name, _, _, _, _, _, _, _, _, assignedRole  = C_LFGList.GetApplicantMemberInfo(applicants[i], 1);
 			if autoAccepting[assignedRole] then
