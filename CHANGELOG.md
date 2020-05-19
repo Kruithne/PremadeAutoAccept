@@ -1,7 +1,10 @@
+** Version 1.2.1 **
+* Disabled auto-invite for 5+ groups. Till fixed found for RaidConvert spaming.
+* sorry for that =(
+
 ** Version 1.2 **
 * Updated toc.
 * BugFixed: double invite people from list.
-
 
 ** Version 1.1 **
 * Cleaned up implementation to no longer rely on hacky code.
