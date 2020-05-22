@@ -1,8 +1,8 @@
 ## Interface: 80300
-## Title: PremadeAutoAccept for Party's
+## Title: PremadeAutoAccept
 ## Notes: Returns the auto-accept button to the premade group finder
-## Author: Kruithne Fixed by: Lonermax
-## Version: 1.0.2.1
+## Author: Kruithne
+## Version: 1.2.2
 
 ## X-Curse-Project-ID: premade-auto-accept
 ## X-GitHub-Repo: Kruithne/PremadeAutoAccept

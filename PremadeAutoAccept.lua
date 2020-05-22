@@ -77,9 +77,6 @@ local function CreateAutoAcceptButtons()
 
 	local tankButton = CreateCheckbox("groupfinder-icon-role-large-tank", "TANK");
 	tankButton:SetPoint("LEFT", healerButton.icon, "RIGHT", 5, 0);
-
---[[ 	local allButton = CreateCheckbox("groupfinder-icon-quest", "ALL");
-	allButton:SetPoint("LEFT", tankButton.icon, "RIGHT", 5, 0); ]]
 end
 
 local function OnLoad()
@@ -97,12 +94,19 @@ local function OnApplicantListUpdated()
 			if not displayedRaidConvert and not IsInRaid(LE_PARTY_CATEGORY_HOME) then
 				local futureCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers();
 				if futureCount > (MAX_PARTY_MEMBERS + 1) then
-					do return end;
 					StaticPopup_Show("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID");
 					displayedRaidConvert = true;
 				end
 			end
-
+			-- tried to fix the raid convert spam bug
+			if displayedRaidConvert and not IsInRaid(LE_PARTY_CATEGORY_HOME) then
+				if futureCount < (MAX_PARTY_MEMBERS + 1) then
+					InviteApplicants();
+					do return end;
+				else
+					do return end;
+				end 
+			end
 			InviteApplicants();
 		end
 	end

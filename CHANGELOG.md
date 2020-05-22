@@ -1,3 +1,6 @@
+** Version 1.2.2 **
+* Enabled auto-invite for +5 groups again. // spam bug seems fixed.
+
 ** Version 1.2.1 **
 * Disabled auto-invite for 5+ groups. Till fixed found for RaidConvert spaming.
 * sorry for that =(
