@@ -21,7 +21,7 @@ local function InviteApplicants()
 
 			local name, _, _, _, _, _, _, _, _, assignedRole  = C_LFGList.GetApplicantMemberInfo(applicants[i], 1);
 			if autoAccepting[assignedRole] then
-				InviteUnit(name);
+				C_PartyInfo.InviteUnit(name);
 			end
 		end
 	end
