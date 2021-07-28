@@ -100,10 +100,8 @@ local function OnApplicantListUpdated()
 			if displayedRaidConvert then
 				if futureCount < (MAX_PARTY_MEMBERS + 1) then
 					InviteApplicants();
-					do return end;
-				else
-					do return end;
 				end 
+				do return end;
 			end
 		end
 		InviteApplicants();
@@ -122,7 +120,6 @@ local function OnEvent(self, event, ...)
 	elseif event == "LFG_LIST_APPLICANT_LIST_UPDATED" or event == "PARTY_LEADER_CHANGED" then
 		OnApplicantListUpdated();
 	elseif event == "GROUP_LEFT" then
-		isAutoAccepting = false;
 		displayedRaidConvert = false;
 	end
 end
