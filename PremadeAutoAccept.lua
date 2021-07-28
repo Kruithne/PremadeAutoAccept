@@ -88,27 +88,23 @@ local function OnLoad()
 end
 
 local function OnApplicantListUpdated()
-	if UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) then
-		if isAutoAccepting then
+	if isAutoAccepting and UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) then
+		if not IsInRaid(LE_PARTY_CATEGORY_HOME) then
+			local futureCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers();
 			-- Display conversion to raid notice.
-			if not displayedRaidConvert and not IsInRaid(LE_PARTY_CATEGORY_HOME) then
-				local futureCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers();
-				if futureCount > (MAX_PARTY_MEMBERS + 1) then
-					StaticPopup_Show("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID");
-					displayedRaidConvert = true;
-				end
+			if not displayedRaidConvert and futureCount > (MAX_PARTY_MEMBERS + 1) then
+				StaticPopup_Show("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID");
+				displayedRaidConvert = true;
 			end
 			-- tried to fix the raid convert spam bug
-			if displayedRaidConvert and not IsInRaid(LE_PARTY_CATEGORY_HOME) then
+			if displayedRaidConvert then
 				if futureCount < (MAX_PARTY_MEMBERS + 1) then
 					InviteApplicants();
-					do return end;
-				else
-					do return end;
 				end 
+				do return end;
 			end
-			InviteApplicants();
 		end
+		InviteApplicants();
 	end
 end
 
@@ -124,7 +120,6 @@ local function OnEvent(self, event, ...)
 	elseif event == "LFG_LIST_APPLICANT_LIST_UPDATED" or event == "PARTY_LEADER_CHANGED" then
 		OnApplicantListUpdated();
 	elseif event == "GROUP_LEFT" then
-		isAutoAccepting = false;
 		displayedRaidConvert = false;
 	end
 end
